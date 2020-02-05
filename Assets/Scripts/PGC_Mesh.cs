@@ -14,6 +14,8 @@ public class PGC_Mesh : MonoBehaviour
     private MeshFilter meshfilter;
     private MeshRenderer meshrenderer;
     private MeshCollider meshcollider;
+    public float magnitude = 1.0f;
+    public Material mat;
 
     void Start()
     {
@@ -21,9 +23,12 @@ public class PGC_Mesh : MonoBehaviour
         mesh = meshfilter.mesh;
         mesh.MarkDynamic();
         meshrenderer = gameObject.AddComponent<MeshRenderer>();
-        meshrenderer.material = Resources.Load<Material>("Assets/Materials/Mesh Material.mat");
+        meshrenderer.material = mat;
         meshcollider = gameObject.AddComponent<MeshCollider>();
         generate();
+        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        cube.AddComponent<Rigidbody>();
+        cube.transform.position = new Vector3(10, 5.5f, 10);
     }
     // Start is called before the first frame update
     void generate() 
@@ -61,7 +66,7 @@ public class PGC_Mesh : MonoBehaviour
         vertices = mesh.vertices;
         for (int i = 0; i < vertices.Length; i++)
         {
-            vertices[i][1] =Mathf.Cos((vertices[i][0] - vertices[i][2])* speed) * Mathf.Sin(Time.time * speed);
+            vertices[i][1] = magnitude * (Mathf.Cos((vertices[i][0] - vertices[i][2])* speed) * Mathf.Sin(Time.time * speed));
         }
         for (int t = 0, v = 0, y = 0; y < Ysize; y++, v++)
         {
