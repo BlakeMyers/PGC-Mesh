@@ -5,6 +5,7 @@ using UnityEngine;
 public class PGC_Mesh : MonoBehaviour
 {
     public int Xsize, Ysize;
+    public float speed = 1;
     private Vector3[] vertices;
     private Vector3[] newvertices;
     private Vector2[] uv;
@@ -12,6 +13,7 @@ public class PGC_Mesh : MonoBehaviour
     private Mesh mesh;
     private MeshFilter meshfilter;
     private MeshRenderer meshrenderer;
+    private MeshCollider meshcollider;
 
     void Start()
     {
@@ -19,7 +21,8 @@ public class PGC_Mesh : MonoBehaviour
         mesh = meshfilter.mesh;
         mesh.MarkDynamic();
         meshrenderer = gameObject.AddComponent<MeshRenderer>();
-        meshrenderer.material = Resources.Load<Material>("Mesh Material");
+        meshrenderer.material = Resources.Load<Material>("Assets/Materials/Mesh Material.mat");
+        meshcollider = gameObject.AddComponent<MeshCollider>();
         generate();
     }
     // Start is called before the first frame update
@@ -49,15 +52,16 @@ public class PGC_Mesh : MonoBehaviour
         mesh.uv = uv;
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
+        meshcollider.sharedMesh = mesh;
     }
 
     // Update is called once per frame
     void Update()
     {
         vertices = mesh.vertices;
-        for (int i = 0; i < vertices.Length; i+=2)
+        for (int i = 0; i < vertices.Length; i++)
         {
-            vertices[i][1] =  Mathf.Sin(Time.deltaTime);
+            vertices[i][1] =Mathf.Cos((vertices[i][0] - vertices[i][2])* speed) * Mathf.Sin(Time.time * speed);
         }
         for (int t = 0, v = 0, y = 0; y < Ysize; y++, v++)
         {
@@ -73,5 +77,6 @@ public class PGC_Mesh : MonoBehaviour
         mesh.uv = uv;
         mesh.triangles = triangles;
         mesh.RecalculateNormals();
+        meshcollider.sharedMesh = mesh;
     }
 }
